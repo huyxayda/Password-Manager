@@ -81,6 +81,7 @@ def check_master_password(input_passwd):
     if ( input_passwd_hash_value != saved_passwd_hash_value ):
         return False
     else:
+        set_master_passwd(input_passwd)
         return True
 
 # PBKDF2HMAC master password
@@ -102,6 +103,7 @@ def open_secret_key(master_passwd, salt):
         content = json.load(file)
         encrypted_key = bytes.fromhex(content.get('key')) #convert from hex to bytes
         key = passwd_cipher.decrypt(encrypted_key)
+        set_secret_key(key)
     return key
 
 # def create new secret key then save to a file
@@ -131,10 +133,31 @@ def decrypt_AES(key, encrypted_text) :
     decrypted_text = unpad(decrypted_cipher.decrypt(raw[AES.block_size:]), AES.block_size).decode('utf_8')
     return decrypted_text
 
+def set_encrypted_password(user_input_passwd):
+    utf8_passwd = user_input_passwd.encode('utf_8')
+    # key = get_secret_key()
+    key = open_secret_key(master_passwd,fix_salt)
+    encrypted_passwd = encrypt_AES(key,iv, utf8_passwd)
+    return encrypted_passwd
+
+def set_master_passwd(user_input):
+    global master_passwd
+    master_passwd = user_input
+def get_master_passwd():
+    global master_passwd
+    return master_passwd
+
+def set_secret_key(key_from_db):
+    global secret_key
+    secret_key = key_from_db
+def get_secret_key():
+    global secret_key
+    return secret_key
+
 passwd = "nguyễn"
 utf8_passwd = passwd.encode('utf_8')
 
-master_passwd = 'testing'
+# master_passwd = ''
 # open key file
 key_file = Path(".\key\key.txt")
 pass_file = Path(".\key\pass.txt")
