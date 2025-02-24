@@ -124,21 +124,24 @@ def create_secret_key(master_passwd, salt, mode, old_passwd = ''):
 def encrypt_AES(key,iv, target_unencrypted_text):
     cipher = AES.new(key,AES.MODE_CBC,iv)
     ciphertext = base64.b64encode(iv + cipher.encrypt(pad(target_unencrypted_text,AES.block_size)))
-    return ciphertext
+    return ciphertext.decode('utf-8')
 
 # decypt
 def decrypt_AES(key, encrypted_text) :
-    raw = base64.b64decode(encrypted_text)
+    raw = base64.b64decode(encrypted_text.encode('utf-8'))
     decrypted_cipher = AES.new(key, AES.MODE_CBC, raw[:AES.block_size])
     decrypted_text = unpad(decrypted_cipher.decrypt(raw[AES.block_size:]), AES.block_size).decode('utf_8')
     return decrypted_text
 
 def set_encrypted_password(user_input_passwd):
     utf8_passwd = user_input_passwd.encode('utf_8')
-    # key = get_secret_key()
     key = open_secret_key(master_passwd,fix_salt)
     encrypted_passwd = encrypt_AES(key,iv, utf8_passwd)
     return encrypted_passwd
+
+def get_decrypted_password(encrypted_passwd):
+    master_passwd = get_master_passwd()
+    return decrypt_AES(open_secret_key(master_passwd,fix_salt), encrypted_passwd)
 
 def set_master_passwd(user_input):
     global master_passwd
@@ -154,8 +157,8 @@ def get_secret_key():
     global secret_key
     return secret_key
 
-passwd = "nguyễn"
-utf8_passwd = passwd.encode('utf_8')
+test_passwd = "1234"
+utf8_passwd = test_passwd.encode('utf_8')
 
 # master_passwd = ''
 # open key file
@@ -166,9 +169,7 @@ iv = token_bytes(AES.block_size)
 fix_salt = '274f2589a5002d3d8e8412c2a877729b' # hex
 passwd_cipher = ''
 
-# encrypted_text = encrypt_AES(key,iv, utf8_passwd)
-# decrypted_text = decrypt_AES(key,encrypted_text)
+# encrypted_text = encrypt_AES(open_secret_key('khongduocmo',fix_salt),iv, utf8_passwd)
+# print('encrypted passwd: ' + encrypted_text)
+# decrypted_text = decrypt_AES(open_secret_key('khongduocmo',fix_salt),encrypted_text)
 # print( 'decrypted text: '+ decrypted_text)
-
-# master_passwd_hash_value = gen_master_password_hash(master_passwd, fix_salt)
-# print( 'maste passwd hash value: '+ master_passwd_hash_value)

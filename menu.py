@@ -1,5 +1,5 @@
-from crypto_function import change_master_password,check_exist_master_password,check_master_password, create_master_password, set_encrypted_password
-from database_manager import store_passwords
+from crypto_function import change_master_password,check_exist_master_password,check_master_password, create_master_password, set_encrypted_password, get_decrypted_password
+from database_manager import store_passwords, find_encrypted_password
 import subprocess
 
 def menu():
@@ -48,21 +48,27 @@ def create():
     app_name = input()
     print('Please provide a simple password for this site: ')
     plaintext = input()
-    passw = set_encrypted_password(plaintext)
-    print('password: ' + passw.decode('utf-8'))
-    # copy password to clipboaed
-    # subprocess.run('xclip', universal_newlines=True, input=passw)
-    print('-'*30)
-    print('')
-    print('Your password has now been created and copied to your clipboard')
-    print('')
-    print('-' *30)
-    user_email = input('Please provide a user email for this app or site')
-    username = input('Please provide a username for this app or site (if applicable)')
+    passwd = set_encrypted_password(plaintext)
+    print('password: ' + passwd)
+    # print('-'*30)
+    # print('')
+    # print('Your password has now been created and copied to your clipboard')
+    # print('')
+    # print('-' *30)
+    user_email = input('Please provide a user email for this app or site: ')
+    username = input('Please provide a username for this app or site (if applicable): ')
     if username == None:
         username = ''
-    url = input('Please paste the url to the site that you are creating the password for')
-    # store_passwords(passw, user_email, username, url, app_name)
+    url = input('Please paste the url to the site that you are creating the password for: ')
+    store_passwords(passwd, user_email, username, url, app_name)
+
+def find_password_for_app():
+    app_name = input('Please enter the application\'s name: ')
+    encrypted_passwd = find_encrypted_password(app_name)
+    print('password: ' + encrypted_passwd)
+    decrypted_passwd = get_decrypted_password(encrypted_passwd)
+    print('Your password for ' + app_name + ' is: ' + decrypted_passwd)
+
 choice = menu()
 is_login = False
 
@@ -83,7 +89,7 @@ while choice != 'Q':
     if choice == '2':
         exit()
     if choice == '3':
-        exit()
+        find_password_for_app()
     else:
-        choice = menu()
+        choice = main_menu()
 exit()

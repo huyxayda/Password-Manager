@@ -23,3 +23,15 @@ def store_passwords(password, user_email, username, url, app_name):
         connection.commit()
     except (Exception, psycopg2.Error) as error:
         print(error)
+
+def find_encrypted_password(app_name):
+    try:
+        connection = connect()
+        cursor = connection.cursor()
+        postgres_select_query = """ SELECT password FROM accounts WHERE app_name = '""" + app_name + "'"
+        cursor.execute(postgres_select_query, app_name)
+        connection.commit()
+        result = cursor.fetchone()
+        return result[0]
+    except (Exception, psycopg2.Error) as error:
+        print(error)
