@@ -35,3 +35,15 @@ def find_encrypted_password(app_name):
         return result[0]
     except (Exception, psycopg2.Error) as error:
         print(error)
+
+def find_user(user_email):
+    try:
+        connection = connect()
+        cursor = connection.cursor()
+        postgres_select_query = """ SELECT * FROM accounts WHERE email = '""" + user_email + "'"
+        cursor.execute(postgres_select_query, user_email)
+        connection.commit()
+        result = cursor.fetchall()
+        return result
+    except (Exception, psycopg2.Error) as error:
+        print(error)

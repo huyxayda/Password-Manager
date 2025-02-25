@@ -1,5 +1,5 @@
 from crypto_function import change_master_password,check_exist_master_password,check_master_password, create_master_password, set_encrypted_password, get_decrypted_password
-from database_manager import store_passwords, find_encrypted_password
+from database_manager import store_passwords, find_encrypted_password, find_user
 import subprocess
 
 def menu():
@@ -69,6 +69,22 @@ def find_password_for_app():
     decrypted_passwd = get_decrypted_password(encrypted_passwd)
     print('Your password for ' + app_name + ' is: ' + decrypted_passwd)
 
+def find_accounts():
+    user_email = input('Please enter the email that you want to find account for: ')
+    result = find_user(user_email)
+    title = ('Password: ', 'Email: ', 'Username: ', 'url: ', 'App/Site name: ')
+    print('')
+    print('RESULT')
+    print('')
+    for row in result:
+        for i in range( 0, len(row) - 1 ):
+            if ( i == 0 ): #password column
+                decrypted_password = get_decrypted_password(row[i])
+                print(title[i] + decrypted_password)
+            else:
+                print(title[i] + row[i])
+        print('')
+        print('-'*30)
 choice = menu()
 is_login = False
 
@@ -87,7 +103,7 @@ while choice != 'Q':
     if choice == '1': #create passwd
         create()
     if choice == '2':
-        exit()
+        find_accounts()
     if choice == '3':
         find_password_for_app()
     else:
