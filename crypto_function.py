@@ -1,7 +1,8 @@
 import base64
 import json
 import hashlib
-import os
+import string
+import secrets
 
 from Crypto.Cipher import AES
 from secrets import token_bytes
@@ -156,6 +157,16 @@ def set_secret_key(key_from_db):
 def get_secret_key():
     global secret_key
     return secret_key
+
+def auto_generate_passwd():
+    alphabet = string.ascii_letters + string.digits + '-_'
+    while True:
+        password = ''.join(secrets.choice(alphabet) for i in range(20))
+        if (sum(c.islower() for c in password) >=4
+                and sum(c.isupper() for c in password) >=4
+                and sum(c.isdigit() for c in password) >=4):
+            break
+    return password
 
 test_passwd = "1234"
 utf8_passwd = test_passwd.encode('utf_8')

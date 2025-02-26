@@ -1,4 +1,4 @@
-from crypto_function import change_master_password,check_exist_master_password,check_master_password, create_master_password, set_encrypted_password, get_decrypted_password
+from crypto_function import change_master_password,check_exist_master_password,check_master_password, create_master_password, set_encrypted_password, get_decrypted_password, auto_generate_passwd
 from database_manager import store_passwords, find_encrypted_password, find_user
 import subprocess
 
@@ -37,24 +37,26 @@ def main_menu():
     print('-'*30)
     print(('-'*10) + 'Main Menu'+ ('-' *10))
     print('1. Create new password')
-    print('2. Find all sites and apps connected to an email')
-    print('3. Find a password for a site or app')
+    print('2. Auto generate new password')
+    print('3. Find all sites and apps connected to an email')
+    print('4. Find a password for a site or app')
     print('Q. Exit')
     print('-'*30)
     return input(': ')
 
-def create():
+def create(mode):
     print('Please proivide the name of the site or app you want to generate a password for')
     app_name = input()
-    print('Please provide a simple password for this site: ')
-    plaintext = input()
-    passwd = set_encrypted_password(plaintext)
-    print('password: ' + passwd)
-    # print('-'*30)
-    # print('')
-    # print('Your password has now been created and copied to your clipboard')
-    # print('')
-    # print('-' *30)
+    passwd = ''
+    plaintext = ''
+    if( mode == 1 ):   
+        print('Please provide a simple password for this site: ')
+        plaintext = input()
+        passwd = set_encrypted_password(plaintext)
+    elif( mode == 2 ):
+        plaintext = auto_generate_passwd()
+        passwd = set_encrypted_password(plaintext)
+    print('Your new password is: ' + plaintext)
     user_email = input('Please provide a user email for this app or site: ')
     username = input('Please provide a username for this app or site (if applicable): ')
     if username == None:
@@ -101,10 +103,12 @@ while not is_login:
 choice = main_menu()
 while choice != 'Q':
     if choice == '1': #create passwd
-        create()
+        create(1)
     if choice == '2':
-        find_accounts()
+        create(2)
     if choice == '3':
+        find_accounts()
+    if choice == '4':
         find_password_for_app()
     else:
         choice = main_menu()
