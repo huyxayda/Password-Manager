@@ -63,6 +63,7 @@ def create(mode):
         username = ''
     url = input('Please paste the url to the site that you are creating the password for: ')
     store_passwords(passwd, user_email, username, url, app_name)
+    continue_or_not(mode)
 
 def find_password_for_app():
     mode = 4
@@ -77,6 +78,7 @@ def find_password_for_app():
         find_password_for_app()    
 
 def find_accounts():
+    mode = 3
     user_email = input('Please enter the email that you want to find account for: ')
     result = find_user(user_email)
     title = ('Password: ', 'Email: ', 'Username: ', 'url: ', 'App/Site name: ')
@@ -92,20 +94,28 @@ def find_accounts():
                 print(title[i] + row[i])
         print('')
         print('-'*30)
+    continue_or_not(mode)
 
 def continue_or_not(choice):
+    print("choice : " + str(choice))
     answer = input('Do you want to continue [Y/n]: ')
     if answer.lower() in {"y", "yes"}:
-        if choice == '1': #create passwd
+        if choice == 1: #create passwd
             create(1)
-        if choice == '2':
+        if choice == 2:
             create(2)
-        if choice == '3':
+        if choice == 3:
             find_accounts()
-        if choice == '4':
+        if choice == 4:
             find_password_for_app()
     elif answer.lower() in {"n", "no"}:
-        main_menu()
+        return_main_menu()
+    else:
+        continue_or_not(choice)
+
+def return_main_menu():
+    global choice
+    choice = main_menu()
 
 choice = menu()
 is_login = False
