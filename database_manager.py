@@ -35,6 +35,7 @@ def find_encrypted_password(app_name):
         return result[0]
     except (Exception, psycopg2.Error) as error:
         print(error)
+        return -1
 
 def find_user(user_email):
     try:
