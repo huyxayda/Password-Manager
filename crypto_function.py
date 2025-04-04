@@ -171,7 +171,6 @@ def auto_generate_passwd():
 test_passwd = "1234"
 utf8_passwd = test_passwd.encode('utf_8')
 
-# master_passwd = ''
 # open key file
 key_file = Path(".\key\key.txt")
 pass_file = Path(".\key\pass.txt")
@@ -179,8 +178,3 @@ key = ''
 iv = token_bytes(AES.block_size)
 fix_salt = '274f2589a5002d3d8e8412c2a877729b' # hex
 passwd_cipher = ''
-
-# encrypted_text = encrypt_AES(open_secret_key('khongduocmo',fix_salt),iv, utf8_passwd)
-# print('encrypted passwd: ' + encrypted_text)
-# decrypted_text = decrypt_AES(open_secret_key('khongduocmo',fix_salt),encrypted_text)
-# print( 'decrypted text: '+ decrypted_text)
